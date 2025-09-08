@@ -3,30 +3,26 @@ import {
     Button,
     Dialog,
     DialogActions,
-    DialogContent,
     DialogTitle,
     Stack,
-    TextField,
     Typography
 } from "@mui/material";
-import type {TTodo} from "../../../../types/todo.ts";
-import {type FC, useState} from "react";
+import type {TData, TTodo} from "../../../../types/todo.ts";
+import { type FC, useState} from "react";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import {ManageTaskModal} from "../../../../components/Modals/manageTaskModal.tsx";
+import axios from "axios";
+import {getAllTasks} from "../../../../data/api_endpoint.ts";
 // import TaskAltIcon from '@mui/icons-material/TaskAlt'; //todo
 // import HourglassBottomIcon from '@mui/icons-material/HourglassBottom'; //in progress
 // import DoneAllIcon from '@mui/icons-material/DoneAll'; //done
 
-
-
 interface ToDoItemProps {
     item: TTodo;
 }
-
-
-export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title, status, createdAt}}) => {
+export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title}}) => {
     // const [ButtonStatus, setButtonStatus] = useState(status)
     const [openDelete, setOpenDelete] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
@@ -45,9 +41,27 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title, sta
         setOpenEdit(true)
     };
 
-    const handleCloseEdit = () => {
-        setOpenEdit(false)
-    };
+    const editData = ({title, description}:TData) => {
+
+        axios
+            .put(`${getAllTasks}/${id}`, {
+                title,
+                description})
+            .then(data => {
+                // const newTakData = data.data as TTodo
+                console.log( data.data, 'response from server')
+                setOpenEdit(false)
+            })
+    }
+
+    const deleteTask = () => {
+        setOpenDelete(false)
+        axios
+            .delete(`${getAllTasks}/${id}`)
+            .then((data) => {
+                console.log('this data was removed:', data)
+            })
+    }
 
     return (
         <>
@@ -61,56 +75,40 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title, sta
                 p: 1,
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                boxShadow: '0px 2px 6px rgba(0,0,0,0.1)'
+                boxShadow: '0px 6px 10px rgba(0,0,0,0.1)',
+                "&:hover": {boxShadow: '0px 4px 0px rgba(0,0,0,0.2)'},
+                cursor: 'pointer'
             }}>
-
-                <Stack direction="row" spacing={1}>
-
-                    <IconButton aria-label="check">
-                        <CheckBoxOutlineBlankIcon/>
-                    </IconButton>
-
-                </Stack>
 
                 <Typography ml={1}>{id}</Typography>
                 <Typography ml={1}>{title}</Typography>
                 <Typography ml={1}>{description}</Typography>
-                <Typography ml={1}>{status}</Typography>
-                <Typography ml={1}>{createdAt}</Typography>
 
                 <Stack direction="row" spacing={1}>
-                    <IconButton sx={{"&:hover": {backgroundColor: "#a8aaf7"}}} onClick={handleOpenEdit} >
+                    <IconButton sx={{"&:hover": {backgroundColor: "#a8aaf7"}}} onClick={handleOpenEdit}  >
                         <EditIcon/>
                     </IconButton>
                     <IconButton sx={{"&:hover": {backgroundColor: "#ef8181"}}} onClick={handleOpenDelete}>
                         <DeleteIcon/>
                     </IconButton>
 
-
                     <Dialog open={openDelete} onClose={handleCloseDelete}>
                         <DialogActions>
                             <DialogTitle>Delete this Note?</DialogTitle>
                             <Button onClick={handleCloseDelete}>NO</Button>
-                            <Button onClick={handleCloseDelete}>YES</Button>
+                            <Button onClick={deleteTask}>YES</Button>
 
                         </DialogActions>
                     </Dialog>
 
-
-                    <Dialog open={openEdit} onClose={handleCloseEdit}>
-                        <DialogTitle>Edit this Note</DialogTitle>
-                        <DialogContent>
-                            <TextField placeholder="Your changes"/>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleCloseEdit}>Cancel</Button>
-                            <Button>Edit</Button>
-                        </DialogActions>
-                    </Dialog>
-
-
-
-
+                    <ManageTaskModal
+                        taskData={{title, description}}
+                        onClickActionButton={editData}
+                        modalTitle="Edit this Note?"
+                        actionButtonName="Edit"
+                        isOpen={openEdit}
+                        onClickCancel={() => setOpenEdit(false)}
+                    />
                 </Stack>
 
             </Box>

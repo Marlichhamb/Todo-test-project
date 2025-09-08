@@ -5,3 +5,8 @@ export type TTodo = {
     status: 'todo' | 'in_progress' | 'done';
     createdAt: string;
 }
+
+export type TData = {
+    title: string;
+    description: string;
+}
