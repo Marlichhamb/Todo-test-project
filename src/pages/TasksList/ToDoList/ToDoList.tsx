@@ -28,7 +28,7 @@ export const ToDoList: FC<IToDoListProps> = ({tasks, setTasks}) => {
       <Box sx={{width: 500, borderRadius: 4}}>
 
           { tasks.map((item) => (
-              <ToDoItem item={ item } />
+              <ToDoItem item={ item } tasks={tasks} setTasks={setTasks} />
           ))}
 
       </Box>

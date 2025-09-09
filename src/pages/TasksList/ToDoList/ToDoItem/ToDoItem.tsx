@@ -8,7 +8,7 @@ import {
     Typography
 } from "@mui/material";
 import type {TData, TTodo} from "../../../../types/todo.ts";
-import { type FC, useState} from "react";
+import {type Dispatch, type FC, type SetStateAction, useState} from "react";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -21,8 +21,10 @@ import {getAllTasks} from "../../../../data/api_endpoint.ts";
 
 interface ToDoItemProps {
     item: TTodo;
+    tasks: TTodo[];
+    setTasks: Dispatch<SetStateAction<TTodo[]>>
 }
-export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title}}) => {
+export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title}, tasks, setTasks}) => {
     // const [ButtonStatus, setButtonStatus] = useState(status)
     const [openDelete, setOpenDelete] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
@@ -48,7 +50,10 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title}}) =
                 title,
                 description})
             .then(data => {
-                // const newTakData = data.data as TTodo
+                const newTask = data.data;
+                setTasks(prev =>
+                    prev.map(task => task.id === newTask.id ? newTask : task)
+                );
                 console.log( data.data, 'response from server')
                 setOpenEdit(false)
             })
@@ -59,6 +64,7 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title}}) =
         axios
             .delete(`${getAllTasks}/${id}`)
             .then((data) => {
+                setTasks(tasks.filter(task => task.id !== id));
                 console.log('this data was removed:', data)
             })
     }
