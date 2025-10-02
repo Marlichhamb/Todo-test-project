@@ -10,13 +10,14 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import {ManageTaskModal} from "../../../components/Modals/manageTaskModal.tsx";
 import {ToDoList} from "../ToDoList/ToDoList.tsx";
-import type {TData, TTodo} from "../../../types/todo.ts";
+import {type TData, type TTodo} from "../../../types/todo.ts";
 import axios from "axios";
 import {getAllTasks} from "../../../data/api_endpoint.ts";
 
 interface ITasksListActionProps {
     tasks: TTodo[];
     setTasks: Dispatch<SetStateAction<TTodo[]>>
+
 }
 
 export const TasksListAction: FC<ITasksListActionProps>= ({setTasks, tasks}) => {
@@ -40,13 +41,14 @@ export const TasksListAction: FC<ITasksListActionProps>= ({setTasks, tasks}) => 
         const newTaskData = {
             title,
             description,
+            status: 'todo',
             createdAt: new Date().getDate(),
         }
         axios
             .post(getAllTasks, newTaskData)
             .then(data => {
                 const newTask = data.data as TTodo;
-                setTasks([...tasks, newTask])
+                setTasks(prevState => [...prevState, newTask]);
             }).catch( error => {
                 console.error("GETTING DATA ERROR", error);
             }
@@ -70,7 +72,7 @@ export const TasksListAction: FC<ITasksListActionProps>= ({setTasks, tasks}) => 
 
           <Dialog open={isOpenCompleted} onClose={handleCloseCompleted}>
               <DialogActions>
-                  <ToDoList tasks={tasks} setTasks={setTasks}/>
+                  <ToDoList tasks={tasks.filter(task => task.status === 'done')} setTasks={setTasks}/>
                   <Button onClick={handleCloseCompleted}>CANCEL</Button>
               </DialogActions>
           </Dialog>

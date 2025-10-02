@@ -1,8 +1,7 @@
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
 
 import {type ChangeEvent, type FC, useState} from "react";
-import {
-} from "@mui/material";
+
 import type {TData} from "../../types/todo.ts";
 
 interface ManageTaskModalProps {
@@ -26,6 +25,14 @@ export const ManageTaskModal: FC<ManageTaskModalProps> = ({ taskData, modalTitle
     const handleChangeDescription = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setDescription(event.target.value);
     };
+
+    const handleActionClick = () => {
+        onClickActionButton({ title, description });
+        setTitle("");
+        setDescription("");
+    };
+
+
 
     return (
         <Dialog
@@ -84,7 +91,7 @@ export const ManageTaskModal: FC<ManageTaskModalProps> = ({ taskData, modalTitle
                 <Button onClick={onClickCancel} color="inherit">
                     Cancel
                 </Button>
-                <Button variant="contained" color="primary" onClick={() => onClickActionButton({title, description})}>
+                <Button variant="contained" color="primary" onClick={handleActionClick}>
                     {actionButtonName}
                 </Button>
             </DialogActions>

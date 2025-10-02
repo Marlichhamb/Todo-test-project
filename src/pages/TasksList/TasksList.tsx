@@ -1,32 +1,42 @@
-import { Box, Typography } from "@mui/material";
-import {type FC, useState} from "react";
+import {Box, Typography} from "@mui/material";
+import {type FC, useEffect, useState} from "react";
 import {TasksListAction} from "./TasksListAction/TasksListAction.tsx";
 import {ToDoList} from "./ToDoList/ToDoList.tsx";
-import type {TTodo} from "../../types/todo.ts";
+import { type TTodo} from "../../types/todo.ts";
+import axios from "axios";
+import {getAllTasks} from "../../data/api_endpoint.ts";
+
 export const TasksList: FC = () =>  {
     const [tasks, setTasks] = useState<TTodo[]>([]);
 
+    useEffect(()=> {
+        axios
+            .get(getAllTasks)
+            .then(data => {
+                setTasks(data.data)
+            }).catch( error => {
+                console.error("GETTING DATA ERROR", error);
+            }
+        )
+    },[]);
 
     return (
+
         <Box
             sx={{
-                padding: 0,
-                margin: 0,
-                hv: '100%',
-                width: "100",
-                height: "100",
+                height: '100vh',
                 display: "flex",
                 flexDirection:'column',
                 alignItems: "center",
                 justifyContent: "flex-start",
-                bgcolor: '#F8FAFC',
+                bgcolor: '#c5ddf6',
 
             }}
         >
             <Typography sx={{color: '#3a3a5b'}} variant="h4" >Todos</Typography>
 
             <TasksListAction tasks={tasks} setTasks={setTasks}/>
-            <ToDoList tasks={tasks} setTasks={setTasks}/>
+            <ToDoList tasks={tasks.filter(task => task.status !== 'done')} setTasks={setTasks}/>
         </Box>
     );
 }

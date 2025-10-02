@@ -21,10 +21,9 @@ import {getAllTasks} from "../../../../data/api_endpoint.ts";
 
 interface ToDoItemProps {
     item: TTodo;
-    tasks: TTodo[];
     setTasks: Dispatch<SetStateAction<TTodo[]>>
 }
-export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title}, tasks, setTasks}) => {
+export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title, status}, setTasks}) => {
     // const [ButtonStatus, setButtonStatus] = useState(status)
     const [openDelete, setOpenDelete] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
@@ -51,8 +50,8 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title}, ta
                 description})
             .then(data => {
                 const newTask = data.data;
-                setTasks(prev =>
-                    prev.map(task => task.id === newTask.id ? newTask : task)
+                setTasks(prevState =>
+                    prevState.map(task => task.id === newTask.id ? newTask : task)
                 );
                 console.log( data.data, 'response from server')
                 setOpenEdit(false)
@@ -64,7 +63,7 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title}, ta
         axios
             .delete(`${getAllTasks}/${id}`)
             .then((data) => {
-                setTasks(tasks.filter(task => task.id !== id));
+                setTasks(prevState => prevState.filter(task => task.id !== id));
                 console.log('this data was removed:', data)
             })
     }
@@ -72,6 +71,7 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title}, ta
     return (
         <>
             <Box sx={{
+                overflow: "hidden",
                 m: '0 16px',
                 display: 'flex',
                 mt: 2,
@@ -89,6 +89,7 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title}, ta
                 <Typography ml={1}>{id}</Typography>
                 <Typography ml={1}>{title}</Typography>
                 <Typography ml={1}>{description}</Typography>
+                <Typography ml={1}>{status}</Typography>
 
                 <Stack direction="row" spacing={1}>
                     <IconButton sx={{"&:hover": {backgroundColor: "#a8aaf7"}}} onClick={handleOpenEdit}  >
