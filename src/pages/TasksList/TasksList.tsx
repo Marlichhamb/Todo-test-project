@@ -1,5 +1,5 @@
 import {Box, Typography} from "@mui/material";
-import {type FC, useEffect, useState} from "react";
+import {type FC, useEffect, useMemo, useState} from "react";
 import {TasksListAction} from "./TasksListAction/TasksListAction.tsx";
 import {ToDoList} from "./ToDoList/ToDoList.tsx";
 import { type TTodo} from "../../types/todo.ts";
@@ -20,6 +20,10 @@ export const TasksList: FC = () =>  {
         )
     },[]);
 
+    const filteredListByStatus = useMemo(() => {
+        return tasks.filter(task => task.status !== 'done');
+    },[tasks])
+
     return (
 
         <Box
@@ -36,7 +40,7 @@ export const TasksList: FC = () =>  {
             <Typography sx={{color: '#3a3a5b'}} variant="h4" >Todos</Typography>
 
             <TasksListAction tasks={tasks} setTasks={setTasks}/>
-            <ToDoList tasks={tasks.filter(task => task.status !== 'done')} setTasks={setTasks}/>
+            <ToDoList tasks={filteredListByStatus} setTasks={setTasks}/>
         </Box>
     );
 }
