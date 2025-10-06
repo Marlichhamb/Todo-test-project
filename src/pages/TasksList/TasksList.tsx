@@ -6,8 +6,11 @@ import { type TTodo} from "../../types/todo.ts";
 import axios from "axios";
 import {getAllTasks} from "../../data/api_endpoint.ts";
 
+export type TStatus = 'all' | 'todo' | 'in_progress' | 'done';
+
 export const TasksList: FC = () =>  {
     const [tasks, setTasks] = useState<TTodo[]>([]);
+    const [selectedStatus, setSelectedStatus] = useState<TStatus>('all')
 
     useEffect(()=> {
         axios
@@ -21,8 +24,12 @@ export const TasksList: FC = () =>  {
     },[]);
 
     const filteredListByStatus = useMemo(() => {
-        return tasks.filter(task => task.status !== 'done');
-    },[tasks])
+        if (selectedStatus !== 'all') {
+            return tasks.filter(task => task.status === selectedStatus);
+        }
+
+        return tasks
+    },[tasks, selectedStatus])
 
     return (
 
@@ -39,7 +46,7 @@ export const TasksList: FC = () =>  {
         >
             <Typography sx={{color: '#3a3a5b'}} variant="h4" >Todos</Typography>
 
-            <TasksListAction tasks={tasks} setTasks={setTasks}/>
+            <TasksListAction tasks={tasks} setTasks={setTasks} setSelectedStatus={setSelectedStatus}/>
             <ToDoList tasks={filteredListByStatus} setTasks={setTasks}/>
         </Box>
     );

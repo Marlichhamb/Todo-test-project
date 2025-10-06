@@ -2,7 +2,7 @@ export type TTodo = {
     id: number;
     title: string;
     description: string;
-    status: 'todo' | 'in_progress' | 'done';
+    status: 'todo' | 'in_progress' | 'done' | 'all'
     createdAt: string;
 }
 
