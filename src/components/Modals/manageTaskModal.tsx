@@ -17,7 +17,6 @@ export const ManageTaskModal: FC<ManageTaskModalProps> = ({ taskData, modalTitle
     const [title, setTitle] = useState(taskData?.title || "")
     const [description, setDescription] = useState(taskData?.description || "")
 
-
     const handleChangeTitle = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setTitle(event.target.value);
     };

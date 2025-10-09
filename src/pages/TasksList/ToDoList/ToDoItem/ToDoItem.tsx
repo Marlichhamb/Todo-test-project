@@ -1,10 +1,11 @@
 import {
+    Autocomplete,
     Box,
     Button,
     Dialog,
     DialogActions,
     DialogTitle,
-    Stack,
+    Stack, TextField,
     Typography
 } from "@mui/material";
 import type {TData, TTodo} from "../../../../types/todo.ts";
@@ -27,8 +28,9 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title, sta
     // const [ButtonStatus, setButtonStatus] = useState(status)
     const [openDelete, setOpenDelete] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
+    const [expStatus, setExpStatus] = useState('Status')
 
-
+    const options = ['todo', 'in_progress', 'done']
     const handleOpenDelete = () => {
 
         setOpenDelete(true)
@@ -70,28 +72,41 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title, sta
 
     return (
         <>
-            <Box sx={{
-                overflow: "hidden",
-                m: '0 16px',
-                display: 'flex',
-                mt: 2,
-                mb: 2,
-                bgcolor: '#F1F5F9',
-                borderRadius: 2,
-                p: 1,
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                boxShadow: '0px 6px 10px rgba(0,0,0,0.1)',
-                "&:hover": {boxShadow: '0px 4px 0px rgba(0,0,0,0.2)'},
-                cursor: 'pointer'
-            }}>
+            <Box sx={{overflow: "hidden", width: '600px', m: '0 16px', display: 'flex', mt: 2, mb: 2, bgcolor: '#F1F5F9', borderRadius: 2, p: 1, alignItems: 'center', justifyContent: 'space-between'}}>
+                <Box sx={{display: 'flex', alignItems: 'center', background: '#F1F5F9', borderRadius: '8px', mb: 1, justifyContent: 'left'}}>
+                    <Typography sx={{flexBasis: '20px', flexShrink: 0, borderRight: '2px solid #d0d7de', px: 1,}}>
+                        {title}
+                    </Typography>
 
-                <Typography ml={1}>{id}</Typography>
-                <Typography ml={1}>{title}</Typography>
-                <Typography ml={1}>{description}</Typography>
-                <Typography ml={1}>{status}</Typography>
+                    <Typography sx={{flexBasis: '300px', borderRight: '2px solid #d0d7de',px: 1,}}>
+                        {description}
+                    </Typography>
+
+                    <Typography sx={{flexBasis: '100px', textAlign: 'left', px: 2,}}>
+                        {status}
+                    </Typography>
+
+                    <div>
+                        {expStatus}
+                    </div>
+
+
+                    <Autocomplete sx={{
+                        width: "fit-content"
+                    }}
+                                  value={expStatus}
+                                  onChange={(_event: any, newValue: string | null) => {
+                                      // @ts-ignore
+                                      setExpStatus(newValue);
+                                  }}
+                                  renderInput={(params) => <TextField {...params} label="status" />}
+                                  options={options}
+                    />
+
+                </Box>
 
                 <Stack direction="row" spacing={1}>
+
                     <IconButton sx={{"&:hover": {backgroundColor: "#a8aaf7"}}} onClick={handleOpenEdit}  >
                         <EditIcon/>
                     </IconButton>
