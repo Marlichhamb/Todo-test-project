@@ -14,8 +14,7 @@ import {
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import {ManageTaskModal} from "../../../components/Modals/manageTaskModal.tsx";
-import {ToDoList} from "../ToDoList/ToDoList.tsx";
-import {type TData, type TTodo} from "../../../types/todo.ts";
+import {type TData, type TStatus, type TTodo} from "../../../types/todo.ts";
 import axios from "axios";
 import {getAllTasks} from "../../../data/api_endpoint.ts";
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
@@ -25,9 +24,7 @@ import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 //in progress
 
 import DoneAllIcon from '@mui/icons-material/DoneAll';
-import type {TStatus} from "../TasksList.tsx";
 //done
-
 
 interface ITasksListActionProps {
     tasks: TTodo[];
@@ -36,7 +33,7 @@ interface ITasksListActionProps {
 }
 
 
-export const TasksListAction: FC<ITasksListActionProps>= ({setTasks, tasks, setSelectedStatus}) => {
+export const TasksListAction: FC<ITasksListActionProps>= ({setTasks, setSelectedStatus}) => {
 
     const [isOpenCreate, setIsOpenCreate] = useState(false);
     const [isOpenCompleted, setIsOpenCompleted] = useState(false);
@@ -81,7 +78,7 @@ export const TasksListAction: FC<ITasksListActionProps>= ({setTasks, tasks, setS
               </IconButton>
           </Tooltip>
 
-          <FormControl sx={{ display: 'flex', justifyContent: 'center', alignItems:'center'}}>
+          <FormControl sx={{display: 'flex', justifyContent: 'center', alignItems:'center'}}>
               <FormLabel id="demo-row-radio-buttons-group-label">Status</FormLabel>
               <RadioGroup
                   row
@@ -113,7 +110,6 @@ export const TasksListAction: FC<ITasksListActionProps>= ({setTasks, tasks, setS
 
           <Dialog open={isOpenCompleted} onClose={handleCloseCompleted}>
               <DialogActions>
-                  <ToDoList tasks={tasks} setTasks={setTasks}/>
                   <Button onClick={handleCloseCompleted}>CANCEL</Button>
               </DialogActions>
           </Dialog>

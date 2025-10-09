@@ -1,7 +1,7 @@
 import {type Dispatch, type FC, type SetStateAction} from "react";
 import {Box} from "@mui/material";
 import {ToDoItem} from "./ToDoItem/ToDoItem.tsx";
-import type {TTodo} from "../../../types/todo.ts";
+import type { TTodo} from "../../../types/todo.ts";
 
 
 interface IToDoListProps {
@@ -11,7 +11,7 @@ interface IToDoListProps {
 export const ToDoList: FC<IToDoListProps> = ({tasks, setTasks}) => {
 
   return (
-      <Box sx={{width: 500, borderRadius: 4}}>
+      <Box sx={{borderRadius: 4}}>
 
           { tasks.map((item) => (
               <ToDoItem item={ item } setTasks={setTasks} />

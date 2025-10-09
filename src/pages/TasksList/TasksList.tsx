@@ -2,15 +2,14 @@ import {Box, Typography} from "@mui/material";
 import {type FC, useEffect, useMemo, useState} from "react";
 import {TasksListAction} from "./TasksListAction/TasksListAction.tsx";
 import {ToDoList} from "./ToDoList/ToDoList.tsx";
-import { type TTodo} from "../../types/todo.ts";
+import {type TStatus, type TTodo} from "../../types/todo.ts";
 import axios from "axios";
 import {getAllTasks} from "../../data/api_endpoint.ts";
-
-export type TStatus = 'all' | 'todo' | 'in_progress' | 'done';
 
 export const TasksList: FC = () =>  {
     const [tasks, setTasks] = useState<TTodo[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<TStatus>('all')
+
 
     useEffect(()=> {
         axios
@@ -35,16 +34,16 @@ export const TasksList: FC = () =>  {
 
         <Box
             sx={{
-                height: '100vh',
+                height: '100%',
                 display: "flex",
-                flexDirection:'column',
+                flexDirection: 'column',
                 alignItems: "center",
-                justifyContent: "flex-start",
+                justifyContent: "center",
                 bgcolor: '#c5ddf6',
 
             }}
         >
-            <Typography sx={{color: '#3a3a5b'}} variant="h4" >Todos</Typography>
+            <Typography sx={{color: '#198bdc'}} variant="h4" >Task Manager</Typography>
 
             <TasksListAction tasks={tasks} setTasks={setTasks} setSelectedStatus={setSelectedStatus}/>
             <ToDoList tasks={filteredListByStatus} setTasks={setTasks}/>
