@@ -12,3 +12,5 @@ export type TData = {
 }
 
 export type TStatus = 'all' | 'todo' | 'in_progress' | 'done'
+
+export type TChangeStatus = 'todo' | 'in_progress' | 'done'

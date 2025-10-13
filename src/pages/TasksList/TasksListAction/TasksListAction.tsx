@@ -16,7 +16,7 @@ import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import {ManageTaskModal} from "../../../components/Modals/manageTaskModal.tsx";
 import {type TData, type TStatus, type TTodo} from "../../../types/todo.ts";
 import axios from "axios";
-import {getAllTasks} from "../../../data/api_endpoint.ts";
+import {apiToDoUrl} from "../../../data/api_endpoint.ts";
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 //todo
 
@@ -58,7 +58,7 @@ export const TasksListAction: FC<ITasksListActionProps>= ({setTasks, setSelected
             createdAt: new Date().getDate(),
         }
         axios
-            .post(getAllTasks, newTaskData)
+            .post(apiToDoUrl, newTaskData)
             .then(data => {
                 const newTask = data.data as TTodo;
                 setTasks(prevState => [...prevState, newTask]);

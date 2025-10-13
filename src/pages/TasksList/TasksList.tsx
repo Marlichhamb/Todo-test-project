@@ -4,7 +4,7 @@ import {TasksListAction} from "./TasksListAction/TasksListAction.tsx";
 import {ToDoList} from "./ToDoList/ToDoList.tsx";
 import {type TStatus, type TTodo} from "../../types/todo.ts";
 import axios from "axios";
-import {getAllTasks} from "../../data/api_endpoint.ts";
+import {apiToDoUrl} from "../../data/api_endpoint.ts";
 
 export const TasksList: FC = () =>  {
     const [tasks, setTasks] = useState<TTodo[]>([]);
@@ -13,7 +13,7 @@ export const TasksList: FC = () =>  {
 
     useEffect(()=> {
         axios
-            .get(getAllTasks)
+            .get(apiToDoUrl)
             .then(data => {
                 setTasks(data.data)
             }).catch( error => {
@@ -46,7 +46,7 @@ export const TasksList: FC = () =>  {
             <Typography sx={{color: '#198bdc'}} variant="h4" >Task Manager</Typography>
 
             <TasksListAction tasks={tasks} setTasks={setTasks} setSelectedStatus={setSelectedStatus}/>
-            <ToDoList tasks={filteredListByStatus} setTasks={setTasks}/>
+            <ToDoList tasks={filteredListByStatus} setTasks={setTasks} selectedStatus={selectedStatus}/>
         </Box>
     );
 }
