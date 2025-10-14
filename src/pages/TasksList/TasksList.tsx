@@ -34,7 +34,9 @@ export const TasksList: FC = () =>  {
 
         <Box
             sx={{
-                height: '100%',
+                m:0,
+                p:0,
+                height: '100hv',
                 display: "flex",
                 flexDirection: 'column',
                 alignItems: "center",

@@ -1,6 +1,5 @@
 import {
-    Autocomplete,
-    Box,
+    Autocomplete, Box,
     Button,
     Dialog,
     DialogActions,
@@ -16,9 +15,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import {ManageTaskModal} from "../../../../components/Modals/manageTaskModal.tsx";
 import axios from "axios";
 import {apiToDoUrl} from "../../../../data/api_endpoint.ts";
-// import TaskAltIcon from '@mui/icons-material/TaskAlt'; //todo
-// import HourglassBottomIcon from '@mui/icons-material/HourglassBottom'; //in progress
-// import DoneAllIcon from '@mui/icons-material/DoneAll'; //done
 
 interface ToDoItemProps {
     item: TTodo;
@@ -27,12 +23,15 @@ interface ToDoItemProps {
 
 }
 export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title, status}, setTasks}) => {
-    // const [ButtonStatus, setButtonStatus] = useState(status)
     const [openDelete, setOpenDelete] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
-    // const [expStatus, setExpStatus] = useState(selectedStatus)
 
-    const options = ['todo', 'in_progress', 'done']
+    const STATUS_OPTIONS: { value: TStatus; label: string }[] = [
+        { value: 'todo', label: 'Todo' },
+        { value: 'in_progress', label: 'In Progress' },
+        { value: 'done', label: 'Done' }
+    ];
+
     const handleOpenDelete = () => {
 
         setOpenDelete(true)
@@ -47,7 +46,6 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title, sta
     };
 
     const editData = ({title, description}:TData) => {
-
         axios
             .put(`${apiToDoUrl}/${id}`, {
                 title,
@@ -66,9 +64,8 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title, sta
         setOpenDelete(false)
         axios
             .delete(`${apiToDoUrl}/${id}`)
-            .then((data) => {
+            .then( () => {
                 setTasks(prevState => prevState.filter(task => task.id !== id));
-                console.log('this data was removed:', data)
             })
     }
 
@@ -85,10 +82,30 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title, sta
             })
     }
 
+    const cardBackGroundColorByStatus  = (status:TStatus) => {
+        return {
+            backgroundColor:
+                status === "todo" ? "#9ffcc4" : status === "in_progress" ? "#9fddfc" : "#d4aef9",
+
+            borderColor:
+                status === "todo" ? "#128f47" : status === "in_progress" ? "#3b44c5" : "#8528da"
+
+        }
+    }
+
+    const autoCompleteBackGroundColorByStatus  = (status:TStatus) => {
+        return {
+            backgroundColor:
+                status === "todo" ? "#44af6e" : status === "in_progress" ? "#52a3cc" : "#9861ce",
+
+        }
+    }
+
+
 
     return (
         <>
-            <Box sx={{overflow: "hidden", width: '600px', m: '0 16px', display: 'flex', mt: 2, mb: 2, bgcolor: '#F1F5F9', borderRadius: 2, p: 1, alignItems: 'center', justifyContent: 'space-between'}}>
+            <Box sx={{border: `1.5px solid ${cardBackGroundColorByStatus(status).borderColor}`, overflow: "hidden", width: '600px', m: '0 16px', display: 'flex', mt: 2, mb: 2, borderRadius: 2, p: 1, alignItems: 'center', justifyContent: 'space-between',  ...cardBackGroundColorByStatus(status)}}>
 
                     <Box sx={{width: 60}}>
                     <Typography fontSize={12}>
@@ -108,30 +125,46 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title, sta
 
                      <Box>
                          <Autocomplete
-
                              sx={{
                              "& .MuiInputBase-root": {
                                  minWidth: 150,
                                  height: '36px',
                                  borderRadius: '10px',
-                             },
+                                 outline: 'none',
+                                 ...autoCompleteBackGroundColorByStatus(status),
+                                 "&.Mui-focused": {
+                                     outline: 'none',
+                                     boxShadow: 'none',
+                                 },
+                                 "& .MuiOutlinedInput-notchedOutline": {
+                                     border: '0.5px solid',
+                                 },
+                                 "& input:focus": {
+                                     outline: "none",
+                                     boxShadow: "none",
+                                 },
 
+                                 "& input::selection": {
+                                     backgroundColor: "none",
+                                     color: "black",
+                                 }
+
+                             },
                          }}
                              disableClearable
-                             value={status}
-                             onChange={(_event: any, newValue: string | null) => {
-                                 if(newValue !== null) {
-
-                                changeStatus(newValue)
-
+                             options={STATUS_OPTIONS}
+                             getOptionLabel={(option) => option.label}
+                             value={STATUS_OPTIONS.find(opt => opt.value === status)}
+                             onChange={(_, newValue) => {
+                                 if (newValue !== null) {
+                                     changeStatus(newValue.value)
                                  }
-                             }
-                         }
+                             }}
                              renderInput={(params) => <TextField {...params} />}
-                             options={options}/>
+                             />
                      </Box>
 
-                    <Box>
+                     <Box>
                         <IconButton sx={{"&:hover": {backgroundColor: "#a8aaf7"}}} onClick={handleOpenEdit}  >
                             <EditIcon/>
                         </IconButton>
@@ -156,8 +189,8 @@ export const ToDoItem: FC<ToDoItemProps> = ({ item: {id, description, title, sta
                             isOpen={openEdit}
                             onClickCancel={() => setOpenEdit(false)}
                         />
-                    </Box>
-                </Box>
+                     </Box>
+            </Box>
 
         </>
     );
