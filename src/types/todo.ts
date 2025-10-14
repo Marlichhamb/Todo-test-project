@@ -10,3 +10,5 @@ export type TData = {
     title: string;
     description: string;
 }
+
+export type TStatus = 'all' | 'todo' | 'in_progress' | 'done'
